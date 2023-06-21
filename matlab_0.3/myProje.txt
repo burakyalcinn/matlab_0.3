@@ -1,0 +1,124 @@
+% Mahmut Burak YALCIN
+
+
+
+
+
+
+otvMatrah=input('lutfen vergisiz arac fiyatini giriniz: '); %burada aracin ham fiyatini aliriz. otvMatrah=ham fiyat
+
+if otvMatrah<120000
+    mevcutOtv=(otvMatrah*45/100);
+    mevcutKdvOtv=(otvMatrah+mevcutOtv)*1.18;
+elseif 120000<=otvMatrah && otvMatrah<150000
+    mevcutOtv=(otvMatrah*50/100);                            %mevcut sistemde kademesini bulup vergilendirme yaptigimiz bolum
+    mevcutKdvOtv=(otvMatrah+mevcutOtv)*1.18;
+elseif 150000<=otvMatrah && otvMatrah<175000
+    mevcutOtv=(otvMatrah*60/100);
+    mevcutKdvOtv=(otvMatrah+mevcutOtv)*1.18;
+elseif 175000<=otvMatrah && otvMatrah<200000
+    mevcutOtv=(otvMatrah*70/100);
+    mevcutKdvOtv=(otvMatrah+mevcutOtv)*1.18;
+elseif 200000<=otvMatrah
+    mevcutOtv=(otvMatrah*80/100);
+    mevcutKdvOtv=(otvMatrah+mevcutOtv)*1.18;
+end
+
+if (otvMatrah-120000)>=0 %burada aracin hangi bloga ait oldugunu bulup ona gore vergilendirme yaparız.
+    birinciOtv=120000*45/100; %120000 ustu araç otv ismi = birinciOtv
+
+elseif (otvMatrah-120000)<0
+    otv1=otvMatrah*45/100; %otv1 = 120000 alti için vergilendirme ismidir.
+    kdvOtv=(otv1+otvMatrah)*1.18; %arac fiyati ve 120000 alti kalan paranin otv si toplaminin kdv ismi = kdvOtv
+end
+
+if (otvMatrah-150000)>=0
+    ikinciOtv=30000*50/100; %150000 ile 120000 arasindaki farkin otv si = ikinciOtv
+
+elseif (otvMatrah-150000)<0 && (otvMatrah-120000)>=0 %150000 ile 120000 arasinda olan sayilar için vergilendirme.
+    otv2=(otvMatrah-120000)*50/100; %otv2 = 120000 ustu, 150000 alti için vergilendirme ismidir.
+    kdvOtv=(birinciOtv+otv2+otvMatrah)*1.18; %arac fiyati, birinciOtv ve otv2 toplaminin kdv ismi = kdvOtv
+end
+
+if (otvMatrah-175000)>=0
+    ucuncuOtv=25000*60/100; %175000 ile 150000 arasindaki farkin otv si = ucuncuOtv
+
+elseif (otvMatrah-175000<0) && (otvMatrah-150000>=0) %175000 ile 150000 arasinda olan sayilar için vergilendirme.
+    otv3=(otvMatrah-150000)*60/100; %otv = 150000 ustu, 175000 alti icin vergilendirme ismidir.
+    kdvOtv=(birinciOtv+ikinciOtv+otv3+otvMatrah)*1.18; %arac fiyati, birinciOtv, ikinciotv ve otv3 toplaminin kdv ismi = kdvOtv
+end
+
+if (otvMatrah-200000)>=0
+    dorduncuOtv=25000*70/100; %200000 ile 175000 arasindaki farkin otv si = dorduncuOtv
+
+elseif (otvMatrah-200000)<0 && (otvMatrah-175000)>=0 %200000 ile 175000 arasinda olan sayilar icin vergilendirme.
+    otv4=(otvMatrah-175000)*70/100; %otv4 = 175000 ustu, 200000 alti icin vergilendirme ismidir.
+    kdvOtv=(birinciOtv+ikinciOtv+ucuncuOtv+otv4+otvMatrah)*1.18; %arac fiyati, birinciOtv, ikinciOtv, ucuncuOtv ve otv4 toplaminin kdv ismi = kdvOtv
+end
+
+if (otvMatrah-200000)>=0
+    besinciOtv=(otvMatrah-200000)*80/100; %200000 ustunun otv si = besinciOtv
+    kdvOtv=(birinciOtv+ikinciOtv+ucuncuOtv+dorduncuOtv+besinciOtv+otvMatrah)*1.18; %arac fiyati, birinciOtv, ikinciOtv, ucuncuOtv, dorduncuOtv ve besinciOtv toplaminin kdv ismi = kdvOtv
+end
+
+toplamFark=mevcutKdvOtv-kdvOtv;
+kademeliOtv=(kdvOtv/1.18)-otvMatrah;               %farklar ve ve bazi otv fiyatlarina degisken atadigimiz bolum
+otvFark=mevcutOtv-kademeliOtv;
+kademeliOtv1=kdvOtv/1.18;
+kdvFark=((mevcutOtv+otvMatrah)*18/100)-((kademeliOtv+otvMatrah)*18/100);
+toplamFark2=(mevcutOtv+((mevcutOtv+otvMatrah)*18/100))-(kademeliOtv+((kademeliOtv+otvMatrah)*18/100));
+
+if otvMatrah<120000 %bu kisimda da gerekli tablolar yer aliyor
+    fprintf('                              Mevcut Sistem        Kademeli sistem         Fark\n');
+    fprintf('ÖTV Matrah               : %13g%23g              0\n',otvMatrah,otvMatrah);
+    fprintf('ÖTV Oranı                :          45                     45                -\n');
+    fprintf('ÖTV Tutarı               :%14g%23g%17g\n',mevcutOtv,kademeliOtv,otvFark);
+    fprintf('ÖTV Matrah+ÖTV Tutarı(TL):%14g%23g%17g\n',(mevcutOtv+otvMatrah),(kademeliOtv+otvMatrah),otvFark);
+    fprintf('KDV (TL)                 :%14g%23g%17g\n',((mevcutOtv+otvMatrah)*18/100),(kdvOtv-kademeliOtv-otvMatrah),kdvFark);
+    fprintf('Toplam Vergi (TL)        :%14g%23g%17g\n',(mevcutOtv+(mevcutOtv+otvMatrah)*18/100),(kademeliOtv+(kdvOtv-kademeliOtv-otvMatrah)),toplamFark2);
+    fprintf('Araç Satış Fiyatı        :%14g%23g%17g\n',mevcutKdvOtv,kdvOtv,toplamFark);
+end
+
+if 120000<otvMatrah && otvMatrah<150000
+    fprintf('                              Mevcut Sistem        Kademeli sistem         Fark\n');
+    fprintf('ÖTV Matrah               : %13g%23g              0\n',otvMatrah,otvMatrah);
+    fprintf('ÖTV Oranı                :          50                   45, 50              -\n');
+    fprintf('ÖTV Tutarı               :%14g%23g%17g\n',mevcutOtv,kademeliOtv,otvFark);
+    fprintf('ÖTV Matrah+ÖTV Tutarı(TL):%14g%23g%17g\n',(mevcutOtv+otvMatrah),(kademeliOtv+otvMatrah),otvFark);
+    fprintf('KDV (TL)                 :%14g%23g%17g\n',((mevcutOtv+otvMatrah)*18/100),(kdvOtv-kademeliOtv-otvMatrah),kdvFark);
+    fprintf('Toplam Vergi (TL)        :%14g%23g%17g\n',(mevcutOtv+(mevcutOtv+otvMatrah)*18/100),(kademeliOtv+(kdvOtv-kademeliOtv-otvMatrah)),toplamFark2);
+    fprintf('Araç Satış Fiyatı        :%14g%23g%17g\n',mevcutKdvOtv,kdvOtv,toplamFark);
+end
+
+if 150000<otvMatrah && otvMatrah<175000
+    fprintf('                              Mevcut Sistem        Kademeli sistem         Fark\n');
+    fprintf('ÖTV Matrah               : %13g%23g              0\n',otvMatrah,otvMatrah);
+    fprintf('ÖTV Oranı                :          60               45, 50, 60              -\n');
+    fprintf('ÖTV Tutarı               :%14g%23g%17g\n',mevcutOtv,kademeliOtv,otvFark);
+    fprintf('ÖTV Matrah+ÖTV Tutarı(TL):%14g%23g%17g\n',(mevcutOtv+otvMatrah),(kademeliOtv+otvMatrah),otvFark);
+    fprintf('KDV (TL)                 :%14g%23g%17g\n',((mevcutOtv+otvMatrah)*18/100),(kdvOtv-kademeliOtv-otvMatrah),kdvFark);
+    fprintf('Toplam Vergi (TL)        :%14g%23g%17g\n',(mevcutOtv+(mevcutOtv+otvMatrah)*18/100),(kademeliOtv+(kdvOtv-kademeliOtv-otvMatrah)),toplamFark2);
+    fprintf('Araç Satış Fiyatı        :%14g%23g%17g\n',mevcutKdvOtv,kdvOtv,toplamFark);
+end
+
+if 175000<otvMatrah && otvMatrah<200000
+    fprintf('                              Mevcut Sistem        Kademeli sistem         Fark\n');
+    fprintf('ÖTV Matrah               : %13g%23g              0\n',otvMatrah,otvMatrah);
+    fprintf('ÖTV Oranı                :          70           45, 50, 60, 70              -\n');
+    fprintf('ÖTV Tutarı               :%14g%23g%17g\n',mevcutOtv,kademeliOtv,otvFark);
+    fprintf('ÖTV Matrah+ÖTV Tutarı(TL):%14g%23g%17g\n',(mevcutOtv+otvMatrah),(kademeliOtv+otvMatrah),otvFark);
+    fprintf('KDV (TL)                 :%14g%23g%17g\n',((mevcutOtv+otvMatrah)*18/100),(kdvOtv-kademeliOtv-otvMatrah),kdvFark);
+    fprintf('Toplam Vergi (TL)        :%14g%23g%17g\n',(mevcutOtv+(mevcutOtv+otvMatrah)*18/100),(kademeliOtv+(kdvOtv-kademeliOtv-otvMatrah)),toplamFark2);
+    fprintf('Araç Satış Fiyatı        :%14g%23g%17g\n',mevcutKdvOtv,kdvOtv,toplamFark);
+end
+
+if 200000<otvMatrah
+    fprintf('                              Mevcut Sistem        Kademeli sistem         Fark\n');
+    fprintf('ÖTV Matrah               : %13g%23g              0\n',otvMatrah,otvMatrah);
+    fprintf('ÖTV Oranı                :          80            45, 50, 60, 70, 80         -\n');
+    fprintf('ÖTV Tutarı               :%14g%23g%17g\n',mevcutOtv,kademeliOtv,otvFark);
+    fprintf('ÖTV Matrah+ÖTV Tutarı(TL):%14g%23g%17g\n',(mevcutOtv+otvMatrah),(kademeliOtv+otvMatrah),otvFark);
+    fprintf('KDV (TL)                 :%14g%23g%17g\n',((mevcutOtv+otvMatrah)*18/100),(kdvOtv-kademeliOtv-otvMatrah),kdvFark);
+    fprintf('Toplam Vergi (TL)        :%14g%23g%17g\n',(mevcutOtv+(mevcutOtv+otvMatrah)*18/100),(kademeliOtv+(kdvOtv-kademeliOtv-otvMatrah)),toplamFark2);
+    fprintf('Araç Satış Fiyatı        :%14g%23g%17g\n',mevcutKdvOtv,kdvOtv,toplamFark);
+end
